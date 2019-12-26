@@ -1,0 +1,7 @@
+{
+    "env": {
+        "MONGO_USER" : "singsong",
+        "MONGO_PASS": "pass0016",
+        "MONGO_DB" : "gql-mongodb"
+    }
+}
