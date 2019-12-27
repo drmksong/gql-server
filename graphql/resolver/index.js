@@ -159,15 +159,15 @@ const resolver = {
 
 
     },
-    cancelBooking: async bookingId => {
+    cancelBooking: async args => {
         try {
-            const booking = await Booking.findById(bookingId).populate('event');
+            const booking = await Booking.findOne({_id:args.bookingId}).populate('event');
             const event = {
                 ...booking.event._doc,
                 _id: booking.event.id,
                 creator: booking.event._doc.creator
             }
-            await Booking.deleteOne({_id: bookingId});
+            await Booking.deleteOne({_id: args.bookingId});
             return event;
         } catch (err) {
             throw err;
