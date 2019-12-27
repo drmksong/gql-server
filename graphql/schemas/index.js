@@ -14,7 +14,7 @@ type User {
     _id:ID!
     email: String!
     pass:String
-    createdEvent: [Event!]
+    createdEvents: [Event!]
 }
 
 input EventInput {

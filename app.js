@@ -1,11 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import graphqlHttp from 'express-graphql';
-import {buildSchema} from 'graphql';
 import mongoose from 'mongoose';
-
-import Event from './models/event';
-import User from './models/user';
 
 import schemas from './graphql/schemas/index';
 import resolver from './graphql/resolver/index';

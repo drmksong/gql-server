@@ -13,6 +13,7 @@ const events = async eventIds => {
                 creator: user.bind(this, event.creator)
             }
         });
+        //return events;
     } catch(err){
         throw err;
     }
@@ -20,11 +21,12 @@ const events = async eventIds => {
 
 const user = async userId => {
     try {
-        const user = await User.find({_id: {$in: userId}});
+        const user = await User.findById( userId);
         return {
             ...user._doc,
             _id: user.id,
-            createdEvent: events.bind(this, user._doc.createdEvent)
+            pass: null,
+            createdEvents: events.bind(this, user._doc.createdEvents)
         }
     } catch(err) {
         throw err;
@@ -52,18 +54,19 @@ const resolver = {
             title: args.eventInput.title,
             desc:args.eventInput.desc,
             price:+args.eventInput.price,
-            date:new Date(args.eventInput.date)
+            date:new Date(args.eventInput.date),
+            creator: '5e04bcf2d7fe371444114eb3'
         });
         let createdEvents;
         try {
-            await event.save();
-            createdEvent = {
-                ...event._doc,
-                _id: event.id,
-                date: new Date(event._doc.date).toISOString(),
-                creator: user.bind(this, event._doc.creator)
+            const result = await event.save();
+            createdEvents = {
+                ...result._doc,
+                _id: result.id,
+                date: new Date(result._doc.date).toISOString(),
+                creator: user.bind(this, result._doc.creator)
             }
-            const creator = await User.findById();
+            const creator = await User.findById("5e04bcf2d7fe371444114eb3");
 
             if(!creator) {
                 throw new Error('User not found');
