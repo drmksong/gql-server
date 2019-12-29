@@ -3,7 +3,6 @@ import User from '../../models/user';
 
 import {transformEvent} from './merge';
 
-
 const eventsResolver = {
     events: async () => {
         try {
@@ -15,19 +14,22 @@ const eventsResolver = {
             throw err;
         }
     },
-    createEvent: async (args) => {
+    createEvent: async (args,req) => {
+        if (!req.isAuth) {
+            throw new Error('Authentification error');
+        }
         const event = new Event({
             title: args.eventInput.title,
             desc:args.eventInput.desc,
             price:+args.eventInput.price,
             date:new Date(args.eventInput.date),
-            creator: '5e04bcf2d7fe371444114eb3'
+            creator: req.userId
         });
         let createdEvents;
         try {
             const result = await event.save();
             createdEvents = transformEvent(result);
-            const creator = await User.findById("5e04bcf2d7fe371444114eb3");
+            const creator = await User.findById(req.userId);
 
             if(!creator) {
                 throw new Error('User not found');

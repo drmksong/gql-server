@@ -5,7 +5,10 @@ import Booking from '../../models/booking';
 import {transformEvent,transformBooking} from './merge';
 
 const bookingResolver = {
-    bookings: async () => {
+    bookings: async (args, req) => {
+        if (!req.isAuth) {
+            throw new Error('Athentification error');
+        }
         try {
             const bookings = await Booking.find();
             return bookings.map(booking => {
@@ -15,22 +18,26 @@ const bookingResolver = {
             throw err;
         }
     },
-    bookEvent: async args => {
+    bookEvent: async (args, req) => {
+        if(!req.isAuth) {
+            throw new Error('Athetification error');
+        }
         try {
             const fetchedEvent = await Event.findOne({_id:args.eventId});
             const booking = new Booking({
-                user:'5e04bcd6d7fe371444114eb2',
+                user:req.userId,
                 event: fetchedEvent
             });
             const result = await booking.save();
             return transformBooking(result);
         } catch (err) {
-            throw err;
+            throw err; 
         }
-
-
     },
-    cancelBooking: async args => {
+    cancelBooking: async (args, req) => {
+        if(!req.isAuth) {
+            throw new Error('Athetification error');
+        }
         try {
             const booking = await Booking.findOne({_id:args.bookingId}).populate('event');
             const event = transformEvent(booking.event);

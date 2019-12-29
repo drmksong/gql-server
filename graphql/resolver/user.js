@@ -1,8 +1,6 @@
 import bcrypt from 'bcryptjs';
-
+import jwt from 'jsonwebtoken';
 import User from '../../models/user';
-
-import {transformEvent,transformBooking,events,user,bookedEvent} from './merge';
 
 
 const userResolver = {
@@ -29,6 +27,22 @@ const userResolver = {
         }catch (err) {
             throw err;
         }
+    },
+    login: async args => {
+        const user = await User.findOne({email: args.email});
+        if (!user) {
+            throw new Error('User not found!!!');
+        }
+        const isEqual = await bcrypt.compare(args.pass, user.pass);
+        if(!isEqual) {
+            throw new Error('Incorrect password!!!');
+        }
+        const token = jwt.sign(
+            { userId: user.id, email: user.email },
+            'supersecretekey',
+            {expiresIn : '1h'}
+            );
+        return {userId: user.id, token: token, tokenExpiration: 1};
     }
 };
 

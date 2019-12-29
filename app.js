@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 
 import schemas from './graphql/schemas/index';
 import resolver from './graphql/resolver/index';
+import isAuth from './middleware/is-auth';
 
 const app = express();
 
@@ -12,6 +13,7 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use(isAuth);
 /*
 app.get('/', (req,res,next) => {
     res.send('Hello World!!!')
